@@ -15,7 +15,20 @@ void addPhantu(Node*& head, int coso, int mu) {
     head = newNode;
 }
 
-void inDathuc (Node* head){
+void nhapDathuc(Node*& head) {
+    int n, heso, somu;
+    cout << "Nhap so phan tu: ";
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        cout << "Nhap he so: ";
+        cin >> heso;
+        cout << "Nhap so mu: ";
+        cin >> somu;
+        addPhantu(head, heso, somu);
+    }
+}
+
+void inDathuc(Node* head) {
     Node* t = head;
     while (t != nullptr) {
         if (t->heso > 0 && t != head) {
@@ -31,9 +44,6 @@ void inDathuc (Node* head){
                 cout << "^" << t->somu;
             }
         }
-        if (t->heso == 0 && t != head) {
-            delete t;
-        }
         t = t->next;
     }
     cout << endl;
@@ -44,62 +54,46 @@ Node* congDathuc(Node* fx, Node* gx) {
     Node* p1 = fx;
     Node* p2 = gx;
 
-    while(p1 != nullptr && p2 != nullptr) {
+    while (p1 != nullptr && p2 != nullptr) {
         if (p1->somu == p2->somu) {
-            addPhantu(hx, p1->heso + p2->heso,p1->somu);
+            addPhantu(hx, p1->heso + p2->heso, p1->somu);
             p1 = p1->next;
             p2 = p2->next;
-        }
-        else if (p1->somu > p2->somu) {
-            addPhantu(hx,p1->heso,p1->somu);
+        } else if (p1->somu > p2->somu) {
+            addPhantu(hx, p1->heso, p1->somu);
             p1 = p1->next;
-        }
-        else {
-            addPhantu(hx,p2->heso,p2->somu);
+        } else {
+            addPhantu(hx, p2->heso, p2->somu);
             p2 = p2->next;
         }
     }
     while (p1 != nullptr) {
-        addPhantu(hx,p1->heso,p1->somu);
+        addPhantu(hx, p1->heso, p1->somu);
         p1 = p1->next;
     }
     while (p2 != nullptr) {
-        addPhantu(hx,p2->heso,p2->somu);
+        addPhantu(hx, p2->heso, p2->somu);
         p2 = p2->next;
     }
     return hx;
 }
 
 int main() {
-    int b1,b2,heso,somu;
-    cout << "Da thuc f(x)" << endl << "Nhap so phan tu f(x): ";
-    cin >> b1;
     Node* f = nullptr;
-    for(int i = 0; i < b1; i++) {
-        cout << "Nhap he so: ";
-        cin >> heso;
-        cout << "Nhap so mu: ";
-        cin >> somu;
-        addPhantu(f,heso,somu);
-    }
-
-    cout << "Da thuc g(x)" << endl << "Nhap so phan tu g(x): ";
-    cin >> b2;
     Node* g = nullptr;
-    for(int i = 0; i < b2; i++) {
-        cout << "Nhap he so: ";
-        cin >> heso;
-        cout << "Nhap so mu: ";
-        cin >> somu;
-        addPhantu(g,heso,somu);
-    }
+
+    cout << "Da thuc f(x)" << endl;
+    nhapDathuc(f);
+
+    cout << "Da thuc g(x)" << endl;
+    nhapDathuc(g);
 
     cout << "f(x) = ";
     inDathuc(f);
     cout << "g(x) = ";
     inDathuc(g);
 
-    Node* h = congDathuc(f,g);
+    Node* h = congDathuc(f, g);
 
     cout << "h(x) = ";
     inDathuc(h);
