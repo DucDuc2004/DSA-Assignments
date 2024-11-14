@@ -33,19 +33,19 @@ void addWord(Node*& head, const string& word) {
 
 string timWordnhieunhat(Node* head) {
     Node* temp = head;
-    string mostFrequent;
-    int maxCount = 0;
+    string wordnhieunhat;
+    int max = 0;
     while (temp != nullptr) {
-        if (temp->solan > maxCount) {
-            maxCount = temp->solan;
-            mostFrequent = temp->word;
+        if (temp->solan > max) {
+            max = temp->solan;
+            wordnhieunhat = temp->word;
         }
         temp = temp->next;
     }
-    return mostFrequent;
+    return wordnhieunhat;
 }
 
-void removeReduplicative(Node*& head) {
+void loaiboTuLay(Node*& head) {
     Node* temp = head;
     while (temp != nullptr && temp->next != nullptr) {
         if (temp->word + " " + temp->word == temp->next->word) {
@@ -57,7 +57,7 @@ void removeReduplicative(Node*& head) {
     }
 }
 
-int countUniqueWords(Node* head) {
+int demsoTuVung(Node* head) {
     int solan = 0;
     Node* temp = head;
     while (temp != nullptr) {
@@ -67,7 +67,7 @@ int countUniqueWords(Node* head) {
     return solan;
 }
 
-void freeList(Node*& head) {
+void giaiphong(Node*& head) {
     while (head != nullptr) {
         Node* temp = head;
         head = head->next;
@@ -75,34 +75,34 @@ void freeList(Node*& head) {
     }
 }
 
-void processSentence(Node*& head, const string& sentence) {
+void tuVung(Node*& head, const string& s) {
     size_t pos = 0, found;
-    while ((found = sentence.find_first_of(" ", pos)) != string::npos) {
-        string word = sentence.substr(pos, found - pos);
+    while ((found = s.find_first_of(" ", pos)) != string::npos) {
+        string word = s.substr(pos, found - pos);
         addWord(head, word);
         pos = found + 1;
     }
-    addWord(head, sentence.substr(pos));
+    addWord(head, s.substr(pos));
 }
 
 int main() {
     Node* head = nullptr;
-    string sentence;
+    string s;
     
     cout << "Nhap cau: ";
-    getline(cin, sentence);
+    getline(cin, s);
 
-    processSentence(head, sentence);
+    tuVung(head, s);
 
-    string mostFrequentWord = timWordnhieunhat(head);
-    cout << "Tu xuat hien nhieu nhat: " << mostFrequentWord << endl;
+    string wordnhieunhat = timWordnhieunhat(head);
+    cout << "Tu xuat hien nhieu nhat: " << wordnhieunhat << endl;
 
-    removeReduplicative(head);
+    loaiboTuLay(head);
 
-    int uniqueWordCount = countUniqueWords(head);
-    cout << "So tu vung trong cau: " << uniqueWordCount << endl;
+    int sotuvung = demsoTuVung(head);
+    cout << "So tu vung trong cau: " << sotuvung << endl;
 
-    freeList(head);
+    giaiphong(head);
     
     return 0;
 }
