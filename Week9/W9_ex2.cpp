@@ -94,5 +94,21 @@ void displayFiles(Node* head) {
 
 int main() {
     Node* head = nullptr;
+
+    insertFile(head, "file1.txt", 500, 1);
+    insertFile(head, "file2.docx", 1024, 2);
+    insertFile(head, "file3.jpg", 1500, 3);
+    insertFile(head, "file4.mp4", 600, 4);
+
+    cout << "Truoc khi sao luu vao USB:\n";
+    displayFiles(head);
+
+    backupToUSB(head);
+
+    cout << "\nSau khi sao luu vao USB (neu can loai bo bot tep):\n";
+    displayFiles(head);
+
+    freeList(head);
+
     return 0;
 }
