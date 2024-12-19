@@ -95,9 +95,9 @@ void printBook(Node* root, int level = 0) {
 
     for (int i = 0; i < level; i++) std::cout << "  "; 
     if (root->soMucCon > 0) {
-        std::cout << root->title << " (Total: " << root->totalPages << " pages)\n";
+        std::cout << root->title << " (Total: " << root->totalPages << " pages)" << std::endl;
     } else {
-        std::cout << root->title << " (" << root->totalPages << " pages)\n";
+        std::cout << root->title << " (" << root->totalPages << " pages)" << std::endl;
     }
 
     for (int i = 0; i < root->soMucCon; i++) {
@@ -131,17 +131,17 @@ int main() {
 
     totalPages(book);
 
-    std::cout << "Book Structure\n";
+    std::cout << "Book Structure" << std::endl;
     printBook(book);
 
-    std::cout << "\nNumber of Chapters in the Book: " << soChapter(book) << "\n";
+    std::cout << std::endl << "Number of Chapters in the Book: " << soChapter(book) << std::endl;
 
     Node* longest = longChapter(book);
     if (longest) {
-        std::cout << "Longest Chapter: " << longest->title << " (Total: " << longest->totalPages << " pages)\n";
+        std::cout << "Longest Chapter: " << longest->title << " (Total: " << longest->totalPages << " pages)" << std::endl;
     }
 
-    std::cout << "\nDelete 'Section 2.2: Support Vector Machines':\n";
+    std::cout << std::endl << "Delete 'Section 2.2: Support Vector Machines':" << std::endl;
     deleteSection(book, "Section 2.2: Support Vector Machines");
     printBook(book);
 
