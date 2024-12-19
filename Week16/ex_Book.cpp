@@ -1,16 +1,15 @@
 #include <iostream>
 
-const int MAX_MUCCON = 10; // Số mục con tối đa cho mỗi node
+const int MAX_MUCCON = 10; 
 
 struct Node {
-    char title[50];         // Tên Chapter hoặc mục
-    int pages;              // Số trang của mục
-    int totalPages;         // Tổng số trang (gồm mục con)
-    int soMucCon;         // Số mục con
-    Node* muccon[MAX_MUCCON]; // Mảng con trỏ đến các mục con
+    char title[50];     
+    int pages;              
+    int totalPages;     
+    int soMucCon;         
+    Node* muccon[MAX_MUCCON]; 
 
     Node(const char* t, int p) {
-        // Sao chép tên mục vào title
         int i = 0;
         while (t[i] != '\0' && i < 49) {
             title[i] = t[i];
@@ -27,7 +26,6 @@ struct Node {
     }
 };
 
-// Hàm so sánh hai chuỗi ký tự (tự triển khai thay vì dùng strcmp)
 bool ssString(const char* str1, const char* str2) {
     int i = 0;
     while (str1[i] != '\0' && str2[i] != '\0') {
@@ -39,24 +37,24 @@ bool ssString(const char* str1, const char* str2) {
     return str1[i] == '\0' && str2[i] == '\0';
 }
 
-// Hàm tính tổng số trang cho một node (bao gồm các mục con)
 int totalPages(Node* node) {
     if (node == nullptr) return 0;
-    int total = node->pages;
-    for (int i = 0; i < node->soMucCon; i++) {
-        total += totalPages(node->muccon[i]);
-    }
-    node->totalPages = total;
-    return total;
-} 
 
-// Đếm số Chapter của cuốn sách (các node con trực tiếp của gốc)
+    int total = 0;
+    for (int i = 0; i < node->soMucCon; i++) {
+        total += totalPages(node->muccon[i]); 
+    }
+
+    node->totalPages = (node->soMucCon > 0) ? total : node->pages;
+    return node->totalPages;
+}
+
+
 int soChapter(Node* root) {
     if (root == nullptr) return 0;
     return root->soMucCon;
 }
 
-// Tìm Chapter dài nhất trong cuốn sách
 Node* longChapter(Node* root) {
     if (root == nullptr || root->soMucCon == 0) return nullptr;
 
@@ -69,37 +67,38 @@ Node* longChapter(Node* root) {
     return longestChapter;
 }
 
-// Tìm và xóa một mục khỏi cây dựa trên tên mục
-bool deleteSection(Node* parent, const char* targetTitle) {
-    if (parent == nullptr) return false;
+bool deleteSection(Node* Node, const char* targetTitle) {
+    if (Node == nullptr) return false;
 
-    for (int i = 0; i < parent->soMucCon; i++) {
-        if (ssString(parent->muccon[i]->title, targetTitle)) {
-            // Xóa node
-            delete parent->muccon[i];
-            for (int j = i; j < parent->soMucCon - 1; j++) {
-                parent->muccon[j] = parent->muccon[j + 1];
+    for (int i = 0; i < Node->soMucCon; i++) {
+        if (ssString(Node->muccon[i]->title, targetTitle)) {
+            delete Node->muccon[i];
+            for (int j = i; j < Node->soMucCon - 1; j++) {
+                Node->muccon[j] = Node->muccon[j + 1];
             }
-            parent->muccon[parent->soMucCon - 1] = nullptr;
-            parent->soMucCon--;
-            totalPages(parent); // Cập nhật lại tổng số trang
+            Node->muccon[Node->soMucCon - 1] = nullptr;
+            Node->soMucCon--;
+            totalPages(Node); 
             return true;
         }
-        // Đệ quy tìm và xóa trong các mục con
-        if (deleteSection(parent->muccon[i], targetTitle)) {
-            totalPages(parent);
+       
+        if (deleteSection(Node->muccon[i], targetTitle)) {
+            totalPages(Node);
             return true;
         }
     }
     return false;
 }
 
-// In cây sách theo dạng cây có thụt lề
 void printBook(Node* root, int level = 0) {
     if (root == nullptr) return;
 
-    for (int i = 0; i < level; i++) std::cout << "  "; // Thụt lề
-    std::cout << root->title << " (" << root->pages << " pages, Total: " << root->totalPages << " pages)\n";
+    for (int i = 0; i < level; i++) std::cout << "  "; 
+    if (root->soMucCon > 0) {
+        std::cout << root->title << " (Total: " << root->totalPages << " pages)\n";
+    } else {
+        std::cout << root->title << " (" << root->totalPages << " pages)\n";
+    }
 
     for (int i = 0; i < root->soMucCon; i++) {
         printBook(root->muccon[i], level + 1);
@@ -110,39 +109,42 @@ int main() {
    
     Node* book = new Node("Artificial Intelligence", 0);
 
-    // Thêm các Chapter
     book->muccon[0] = new Node("Chapter 1: AI Introduction", 10);
     book->muccon[1] = new Node("Chapter 2: Machine Learning", 20);
     book->muccon[2] = new Node("Chapter 3: Deep Learning", 25);
     book->soMucCon = 3;
 
-    // Thêm mục con cho Chapter 2
-    book->muccon[1]->muccon[0] = new Node("Section 2.1: ML Introduction", 5);
-    book->muccon[1]->muccon[1] = new Node("Section 2.2: ML Algorithm", 8);
-    book->muccon[1]->soMucCon = 2;
+    book->muccon[0]->muccon[0] = new Node("Section 1.1: Definition of AI", 3);
+    book->muccon[0]->muccon[1] = new Node("Section 1.2: Applications of AI", 4);
+    book->muccon[0]->muccon[2] = new Node("Section 1.3: History of AI", 3);
+    book->muccon[0]->soMucCon = 3;
 
-    // Tính tổng số trang
+    book->muccon[1]->muccon[0] = new Node("Section 2.1: Linear Regression", 5);
+    book->muccon[1]->muccon[1] = new Node("Section 2.2: Support Vector Machines", 8);
+    book->muccon[1]->muccon[2] = new Node("Section 2.3: Decision Trees", 7);
+    book->muccon[1]->soMucCon = 3;
+
+    book->muccon[2]->muccon[0] = new Node("Section 3.1: Neural Networks", 10);
+    book->muccon[2]->muccon[1] = new Node("Section 3.2: Convolutional Neural Networks", 12);
+    book->muccon[2]->muccon[2] = new Node("Section 3.3: Recurrent Neural Networks", 8);
+    book->muccon[2]->soMucCon = 3;
+
     totalPages(book);
 
-    // In cây sách
-    std::cout << "Cấu trúc cuốn sách:\n";
+    std::cout << "Book Structure\n";
     printBook(book);
 
-    // Đếm Chapter
-    std::cout << "\nSố Chapter của cuốn sách: " << soChapter(book) << "\n";
+    std::cout << "\nNumber of Chapters in the Book: " << soChapter(book) << "\n";
 
-    // Tìm Chapter dài nhất
     Node* longest = longChapter(book);
     if (longest) {
-        std::cout << "Chapter dài nhất: " << longest->title << " với " << longest->totalPages << " trang\n";
+        std::cout << "Longest Chapter: " << longest->title << " (Total: " << longest->totalPages << " pages)\n";
     }
 
-    // Xóa một mục
-    std::cout << "\nXóa mục 'Section 2.2: Các thuật toán ML':\n";
-    deleteSection(book, "Section 2.2: Các thuật toán ML");
+    std::cout << "\nDelete 'Section 2.2: Support Vector Machines':\n";
+    deleteSection(book, "Section 2.2: Support Vector Machines");
     printBook(book);
 
-    // Dọn dẹp bộ nhớ
     delete book;
 
     return 0;
